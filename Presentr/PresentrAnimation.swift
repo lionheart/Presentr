@@ -157,25 +157,38 @@ extension PresentrAnimation: UIViewControllerAnimatedTransitioning {
 
     private func animate(presentrContext: PresentrTransitionContext, transitionContext: UIViewControllerContextTransitioning, duration: TimeInterval) {
         beforeAnimation(using: presentrContext)
-        UIView.animate(withDuration: duration, animations: {
-            self.performAnimation(using: presentrContext)
-        }) { (completed) in
-            self.afterAnimation(using: presentrContext)
+
+        if duration > 0 {
+            UIView.animate(withDuration: duration, animations: {
+                self.performAnimation(using: presentrContext)
+            }) { (completed) in
+                self.afterAnimation(using: presentrContext)
+                transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+            }
+        } else {
+            performAnimation(using: presentrContext)
+            afterAnimation(using: presentrContext)
             transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
         }
     }
 
     private func animateWithSpring(presentrContext: PresentrTransitionContext, transitionContext: UIViewControllerContextTransitioning, duration: TimeInterval, delay: TimeInterval, damping: CGFloat, velocity: CGFloat) {
         beforeAnimation(using: presentrContext)
-        UIView.animate(withDuration: duration,
-                       delay: delay,
-                       usingSpringWithDamping: damping,
-                       initialSpringVelocity: velocity,
-                       options: [],
-                       animations: {
-            self.performAnimation(using: presentrContext)
-        }) { (completed) in
-            self.afterAnimation(using: presentrContext)
+        if duration > 0 {
+            UIView.animate(withDuration: duration,
+                           delay: delay,
+                           usingSpringWithDamping: damping,
+                           initialSpringVelocity: velocity,
+                           options: [],
+                           animations: {
+                self.performAnimation(using: presentrContext)
+            }) { (completed) in
+                self.afterAnimation(using: presentrContext)
+                transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+            }
+        } else {
+            performAnimation(using: presentrContext)
+            afterAnimation(using: presentrContext)
             transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
         }
     }
